@@ -1,0 +1,28 @@
+#ACCOUNTS
+Name,Balance
+Cash,1500000.00
+Bank,20000000.00
+E-Wallet,2500000.00
+#BUDGETS
+Category,Limit
+An uong,1000000.00
+Giai tri,1000000.00
+Hoc tap,1500000.00
+Thue nha,3500000.00
+Tien ich,800000.00
+#TRANSACTIONS
+Type,Id,Date,Amount,Category,Account,Description,Frequency,DueDay
+Income,1,2026-09-01,15000000.00,Luong,Bank,Luong cong ty thang 9,,
+Income,2,2026-09-10,3500000.00,Freelance,Bank,Viet code web freelance,,
+Income,3,2026-09-15,500000.00,Thuong,E-Wallet,Thuong du an mini,,
+Expense,4,2026-09-02,75000.00,An uong,Cash,An trua com tam,,
+Expense,5,2026-09-03,250000.00,An uong,E-Wallet,Di sieu thi mua do an,,
+Expense,6,2026-09-08,450000.00,Giai tri,E-Wallet,Xem phim CGV & bap rang,,
+Expense,7,2026-09-12,800000.00,Hoc tap,Bank,Khoa hoc lap trinh C++,,
+Expense,8,2026-09-18,2200000.00,An uong,Bank,Lien hoan sinh nhat ban,,
+RecurringExpense,9,2026-09-05,3200000.00,Thue nha,Bank,Tien thue tro thang 9,Monthly,5
+RecurringExpense,10,2026-09-10,250000.00,Tien ich,Bank,Tien Internet Viettel,Monthly,10
+RecurringExpense,11,2026-09-15,180000.00,Giai tri,E-Wallet,Goi Netflix hang thang,Monthly,15
+RecurringExpense,12,2026-09-01,350000.00,Suc khoe,Cash,Tien ve thang tap Gym,Monthly,1
+Expense,13,2026-07-15,4200000.00,An uong,Bank,Chi tieu thang 7,,
+Expense,14,2026-08-10,5600000.00,An uong,Bank,Chi tieu thang 8,,
