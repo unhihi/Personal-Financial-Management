@@ -1,11 +1,8 @@
 # Hệ Thống Quản Lý Tài Chính Cá Nhân (Personal Financial Management System)
-> **Dành cho Sinh Viên & Freelancer | Viết bằng C++ (OOP Chuẩn)**
-
-Dự án phần mềm quản lý tài chính cá nhân toàn diện, gọn nhẹ, dễ hiểu, đáp ứng đầy đủ 7 yêu cầu kỹ thuật và nghiệp vụ theo chuẩn bài tập lớn / đồ án môn học Lập trình Hướng đối tượng (OOP).
 
 ---
 
-## 📑 Bảng Đối Chiếu 7 Yêu Cầu Kỹ Thuật (Requirements Checklist)
+## 📑 7 Requirements Checklist
 
 | STT | Yêu Cầu Nghiệp Vụ (Business Requirement) | Hiện Thực Kỹ Thuật (Technical Implementation) | Vị Trí Code |
 |:---:|---|---|---|
@@ -279,6 +276,3 @@ Khi khởi chạy, chương trình đã nạp sẵn bộ dữ liệu mẫu (Samp
 * **[10] Nạp lại dữ liệu mẫu**: Khôi phục lại dữ liệu mẫu ban đầu.
 
 ---
-
-## 👥 Phân Chia Công Việc Nhóm 7 Người (GitHub)
-Xem chi tiết kế hoạch phân chia 7 phần, thứ tự đẩy mã nguồn và câu lệnh Git đầy đủ tại: **[`Git.md`](Git.md)**.
