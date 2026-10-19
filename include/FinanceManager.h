@@ -42,4 +42,8 @@ public: //Hàm - hành vi
     void setBudgetLimit(const string& category, double limit);
     void displayBudgetReport(int month = 0, int year = 0) const;
     const Budget& getBudget() const;
+
+    // 6. ASCII Chart
+    void renderMonthlySpendingChart(int year) const;
+    void renderCategorySpendingChart(int month = 0, int year = 0) const;
 };
