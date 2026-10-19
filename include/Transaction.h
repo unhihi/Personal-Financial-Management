@@ -1,6 +1,6 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <string>
 using namespace std;
 
 /* Class cơ sở cho tất cả các loại giao dịch

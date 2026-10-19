@@ -18,3 +18,4 @@ data/test_storage.csv
 # OS files
 Thumbs.db
 .DS_Store
+AGENTS.md
