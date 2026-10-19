@@ -92,6 +92,16 @@ int main(int argc, char* argv[]) {
     string command = argv[1];
 
     // ──────────────────────────────────────────────
+    //  get-data  ->  tra ve JSON toan bo du lieu
+    // ──────────────────────────────────────────────
+    if (command == "get-data") {
+        FinanceManager manager;
+        manager.loadData(DATA_FILE);
+        cout << manager.toJson() << endl;
+        return 0;
+    }
+
+    // ──────────────────────────────────────────────
     //  add-account <name> <balance>
     // ──────────────────────────────────────────────
     if (command == "add-account") {
@@ -212,7 +222,7 @@ int main(int argc, char* argv[]) {
         cout << result.str() << endl;
         return 0;
     }
-    
+
     // ──────────────────────────────────────────────
     //  load-sample  ->  nap CSV demo vao file du lieu dang dung
     // ──────────────────────────────────────────────

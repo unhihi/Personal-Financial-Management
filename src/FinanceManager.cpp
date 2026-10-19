@@ -229,31 +229,6 @@ void FinanceManager::displayBudgetReport(int month, int year) const {
     }
 }
 
-string FinanceManager::budgetAlertJson(const string& category, int month, int year, double newAmount) const {
-    double spent = calculateCategorySpending(category, month, year) + newAmount;
-    double limit = budget.getLimit(category);
-
-    stringstream ss;
-    ss << "{";
-    ss << "\"category\":\"" << jsonEscape(category) << "\",";
-    ss << "\"spent\":"      << spent << ",";
-    ss << "\"limit\":"      << limit << ",";
-    if (limit > 0) {
-        int pct = (int)((spent / limit) * 100);
-        ss << "\"percent\":"   << pct << ",";
-        if (spent > limit)
-            ss << "\"status\":\"over\"";
-        else if (pct >= 80)
-            ss << "\"status\":\"warning\"";
-        else
-            ss << "\"status\":\"ok\"";
-    } else {
-        ss << "\"percent\":0,\"status\":\"ok\"";
-    }
-    ss << "}";
-    return ss.str();
-}
-
 
 // ================= 4. BIEU DO TRUC QUAN ASCII CHART =================
 void FinanceManager::renderMonthlySpendingChart(int year) const {
@@ -601,6 +576,31 @@ string FinanceManager::toJson() const {
     }
     ss << "]";
 
+    ss << "}";
+    return ss.str();
+}
+
+string FinanceManager::budgetAlertJson(const string& category, int month, int year, double newAmount) const {
+    double spent = calculateCategorySpending(category, month, year) + newAmount;
+    double limit = budget.getLimit(category);
+
+    stringstream ss;
+    ss << "{";
+    ss << "\"category\":\"" << jsonEscape(category) << "\",";
+    ss << "\"spent\":"      << spent << ",";
+    ss << "\"limit\":"      << limit << ",";
+    if (limit > 0) {
+        int pct = (int)((spent / limit) * 100);
+        ss << "\"percent\":"   << pct << ",";
+        if (spent > limit)
+            ss << "\"status\":\"over\"";
+        else if (pct >= 80)
+            ss << "\"status\":\"warning\"";
+        else
+            ss << "\"status\":\"ok\"";
+    } else {
+        ss << "\"percent\":0,\"status\":\"ok\"";
+    }
     ss << "}";
     return ss.str();
 }

@@ -1,0 +1,52 @@
+#ACCOUNTS
+Name,Balance
+Cash,845000.00
+Bank,57490000.00
+E-Wallet,610000.00
+#BUDGETS
+Category,Limit
+Ăn uống,3000000.00
+Giải trí,1000000.00
+Học tập,1500000.00
+Thuê nhà,3500000.00
+Tiện ích,800000.00
+#TRANSACTIONS
+Type,Id,Date,Amount,Category,Account,Description,Frequency,DueDay
+Income,1,2026-09-01,15000000.00,Lương,Bank,Lương công ty tháng 9.,,
+Income,2,2026-09-10,3500000.00,Freelance,Cash,Viết code web freelance.,,
+Income,3,2026-09-15,500000.00,Thưởng,E-Wallet,Thưởng dự án mini.,,
+Expense,4,2026-09-02,75000.00,Ăn uống,Cash,Ăn trưa cơm tấm.,,
+Expense,5,2026-09-03,250000.00,Ăn uống,E-Wallet,Đi siêu thị mua đồ ăn.,,
+Expense,6,2026-09-08,450000.00,Giải trí,E-Wallet,Xem phim CGV & bắp rang.,,
+Expense,7,2026-09-12,800000.00,Học tập,Bank,Khóa học lập trình C++.,,
+Expense,8,2026-09-18,2200000.00,Ăn uống,Bank,Liên hoan sinh nhật bạn.,,
+RecurringExpense,9,2026-09-05,3200000.00,Thuê nhà,Bank,Tiền thuê trọ tháng 9.,Monthly,5
+RecurringExpense,10,2026-09-10,250000.00,Tiện ích,Bank,Tiền Internet Viettel.,Monthly,10
+RecurringExpense,11,2026-09-15,180000.00,Giải trí,E-Wallet,Gói Netflix hằng tháng.,Monthly,15
+RecurringExpense,12,2026-09-01,350000.00,Sức khỏe,Cash,Tiền vé tháng tập gym.,Monthly,1
+Expense,13,2026-07-15,4200000.00,Ăn uống,Bank,Chi tiêu tháng 7.,,
+Expense,14,2026-08-10,5600000.00,Ăn uống,Bank,Chi tiêu tháng 8.,,
+Income,15,2026-05-01,14000000.00,Lương,Bank,Lương công ty tháng 5.,,
+Expense,16,2026-05-05,3200000.00,Thuê nhà,Bank,Tiền thuê trọ tháng 5.,,
+Expense,17,2026-05-14,1850000.00,Ăn uống,Cash,Chi phí ăn uống tháng 5.,,
+Expense,18,2026-05-22,650000.00,Học tập,Bank,Mua sách và tài liệu học tập.,,
+Income,19,2026-06-01,14500000.00,Lương,Bank,Lương công ty tháng 6.,,
+Income,20,2026-06-12,2400000.00,Freelance,E-Wallet,Thiết kế giao diện website.,,
+Expense,21,2026-06-05,3200000.00,Thuê nhà,Bank,Tiền thuê trọ tháng 6.,,
+Expense,22,2026-06-20,2100000.00,Ăn uống,E-Wallet,Chi phí ăn uống tháng 6.,,
+Income,23,2026-07-01,15000000.00,Lương,Bank,Lương công ty tháng 7.,,
+Income,24,2026-07-18,1800000.00,Freelance,E-Wallet,Sửa lỗi ứng dụng cho khách hàng.,,
+Expense,25,2026-07-05,3200000.00,Thuê nhà,Bank,Tiền thuê trọ tháng 7.,,
+Expense,26,2026-07-23,380000.00,Giải trí,E-Wallet,Xem phim cùng bạn bè.,,
+Income,27,2026-08-01,15000000.00,Lương,Bank,Lương công ty tháng 8.,,
+Income,28,2026-08-16,1200000.00,Thưởng,Bank,Thưởng hoàn thành công việc.,,
+Expense,29,2026-08-05,3200000.00,Thuê nhà,Bank,Tiền thuê trọ tháng 8.,,
+Expense,30,2026-08-25,420000.00,Tiện ích,Bank,Thanh toán tiền điện và nước.,,
+Expense,31,2026-09-20,160000.00,Ăn uống,Cash,Ăn tối cùng bạn.,,
+Expense,32,2026-09-22,290000.00,Sức khỏe,Bank,Mua vitamin và đồ dùng chăm sóc sức khỏe.,,
+Expense,33,2026-09-25,350000.00,Học tập,E-Wallet,Mua giáo trình kinh tế đầu tư.,,
+Income,34,2026-09-28,900000.00,Freelance,Bank,Chỉnh sửa trang giới thiệu sản phẩm.,,
+Income,35,2026-10-01,15500000.00,Lương,Bank,Lương công ty tháng 10.,,
+Expense,36,2026-10-05,3200000.00,Thuê nhà,Bank,Tiền thuê trọ tháng 10.,,
+Expense,37,2026-10-07,380000.00,Ăn uống,E-Wallet,Mua thực phẩm cho tuần mới.,,
+Expense,38,2026-10-09,220000.00,Giải trí,Cash,Cà phê và gặp gỡ bạn bè.,,
