@@ -153,6 +153,39 @@ void testRq6_FilteringAndSearching() {
     cout << " PASSED: Cac phuong thuc truy van loc giao dich ok.\n";
 }
 
+void testRq7_CSVStorage() {
+    cout << "[TEST 7] Kiem tra CSV Export & Data Load.\n";
+    try {
+        filesystem::create_directories("data");
+    } catch (...) {}
+    string testFile = "data/test_storage.csv";
+    FinanceManager fm;
+    fm.addAccount("Cash", 1234500.0);
+    fm.addAccount("Bank", 9876500.0);
+    fm.setBudgetLimit("An uong", 2500000.0);
+    fm.addTransaction(make_unique<Income>(1, "2026-09-01", 5000000.0, "Freelance", "Bank", "Thu lao web"));
+    fm.addTransaction(make_unique<RecurringExpense>(2, "2026-09-05", 2000000.0, "Thue nha", "Bank", "Tien tro", "Monthly", 5));
+
+    // Luu ra file
+    bool saveOk = fm.saveData(testFile);
+    assert(saveOk == true);
+
+    // Load vao manager moi
+    FinanceManager fm2;
+    bool loadOk = fm2.loadData(testFile);
+    assert(loadOk == true);
+
+    assert(fm2.getAccounts().size() == 2);
+    assert(fm2.findAccount("Cash")->getBalance() == 1234500.0);
+    assert(fm2.getBudget().getLimit("An uong") == 2500000.0);
+
+    vector<const BaseTransaction*> list = fm2.filterByCategory("Thue nha");
+    assert(list.size() == 1);
+    assert(list[0]->getType() == "RecurringExpense");
+
+    cout << " PASSED: FinanceStorage parse file CSV ok\n";
+}
+
 int main() {
     cout << "   RUNNING AUTOMATED TEST SUITE FOR FINANCE SYSTEM      \n";
 
@@ -162,6 +195,7 @@ int main() {
     testRq4_ASCIIChart();
     testRq5_RecurringScheduler();
     testRq6_FilteringAndSearching();
+    testRq7_CSVStorage();
 
     cout << "\n[PASS TEST 100%!]\n";
     return 0;

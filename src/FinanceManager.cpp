@@ -229,6 +229,32 @@ void FinanceManager::displayBudgetReport(int month, int year) const {
     }
 }
 
+string FinanceManager::budgetAlertJson(const string& category, int month, int year, double newAmount) const {
+    double spent = calculateCategorySpending(category, month, year) + newAmount;
+    double limit = budget.getLimit(category);
+
+    stringstream ss;
+    ss << "{";
+    ss << "\"category\":\"" << jsonEscape(category) << "\",";
+    ss << "\"spent\":"      << spent << ",";
+    ss << "\"limit\":"      << limit << ",";
+    if (limit > 0) {
+        int pct = (int)((spent / limit) * 100);
+        ss << "\"percent\":"   << pct << ",";
+        if (spent > limit)
+            ss << "\"status\":\"over\"";
+        else if (pct >= 80)
+            ss << "\"status\":\"warning\"";
+        else
+            ss << "\"status\":\"ok\"";
+    } else {
+        ss << "\"percent\":0,\"status\":\"ok\"";
+    }
+    ss << "}";
+    return ss.str();
+}
+
+
 // ================= 4. BIEU DO TRUC QUAN ASCII CHART =================
 void FinanceManager::renderMonthlySpendingChart(int year) const {
     double monthlyExpenses[13] = {0.0}; // Mang luu chi tieu 12 thang (chi so 1 -> 12)
@@ -480,4 +506,101 @@ vector<const BaseTransaction*> FinanceManager::filterByAccount(const string& acc
         }
     }
     return result;
+}
+
+// ================= 7. XUAT & DOC DU LIEU CSV =================
+bool FinanceManager::saveData(const string& filename) {
+    return storage.saveToFile(filename, accounts, transactions, budget);
+}
+bool FinanceManager::loadData(const string& filename) {
+    if (storage.loadFromFile(filename, accounts, transactions, budget)) {
+        // Cap nhat lai nextId bang ID lon nhat da co + 1
+        nextId = 1;
+        for (int i = 0; i < (int)transactions.size(); i++) {
+            if (transactions[i]->getId() >= nextId) {
+                nextId = transactions[i]->getId() + 1;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+bool FinanceManager::exportQueryResults(const string& filename, const vector<const BaseTransaction*>& list) {
+    return storage.exportTransactionsOnly(filename, list);
+}
+
+
+// ================= Dữ liệu mẫu (Demo Data) =================
+
+bool FinanceManager::loadSampleData() {
+    return loadData("data/finance_data_fixed.csv");
+}
+
+// ================= JSON EXPORT (dung cho Streamlit UI) =================
+
+// Ham thoat dau ngoac kep trong chuoi JSON
+static string jsonEscape(const string& s) {
+    string out;
+    for (int i = 0; i < (int)s.size(); i++) {
+        char c = s[i];
+        if (c == '"')  out += "\\\"";
+        else if (c == '\\') out += "\\\\";
+        else if (c == '\n') out += "\\n";
+        else if (c == '\r') out += "\\r";
+        else out += c;
+    }
+    return out;
+}
+
+string FinanceManager::toJson() const {
+    stringstream ss;
+    ss << "{";
+
+    // Accounts
+    ss << "\"accounts\":[";
+    for (int i = 0; i < (int)accounts.size(); i++) {
+        if (i > 0) ss << ",";
+        ss << "{\"name\":\"" << jsonEscape(accounts[i].getName()) << "\","
+           << "\"balance\":" << accounts[i].getBalance() << "}";
+    }
+    ss << "],";
+
+    // Budgets
+    map<string, double> limits = budget.getAllLimits();
+    ss << "\"budgets\":{";
+    bool firstB = true;
+    for (pair<string, double> p : limits) {
+        if (!firstB) ss << ",";
+        ss << "\"" << jsonEscape(p.first) << "\":" << p.second;
+        firstB = false;
+    }
+    ss << "},";
+
+    // Transactions
+    ss << "\"transactions\":[";
+    for (int i = 0; i < (int)transactions.size(); i++) {
+        if (i > 0) ss << ",";
+        const BaseTransaction* tx = transactions[i].get();
+        ss << "{\"type\":\"" << jsonEscape(tx->getType()) << "\","
+           << "\"id\":"      << tx->getId()        << ","
+           << "\"date\":\""  << jsonEscape(tx->getDate())        << "\","
+           << "\"amount\":"  << tx->getAmount()     << ","
+           << "\"category\":\"" << jsonEscape(tx->getCategory()) << "\","
+           << "\"account\":\"" << jsonEscape(tx->getAccountName()) << "\","
+           << "\"description\":\"" << jsonEscape(tx->getDescription()) << "\"";
+
+        // Them frequency va due_day neu la RecurringExpense
+        if (tx->getType() == "RecurringExpense") {
+            RecurringExpense* rec = (RecurringExpense*)tx;
+            ss << ",\"frequency\":\"" << jsonEscape(rec->getFrequency()) << "\","
+               << "\"due_day\":" << rec->getDueDay();
+        } else {
+            ss << ",\"frequency\":\"\",\"due_day\":1";
+        }
+        ss << "}";
+    }
+    ss << "]";
+
+    ss << "}";
+    return ss.str();
 }

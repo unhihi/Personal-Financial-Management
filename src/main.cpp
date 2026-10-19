@@ -212,6 +212,23 @@ int main(int argc, char* argv[]) {
         cout << result.str() << endl;
         return 0;
     }
+    
+    // ──────────────────────────────────────────────
+    //  load-sample  ->  nap CSV demo vao file du lieu dang dung
+    // ──────────────────────────────────────────────
+    if (command == "load-sample") {
+        FinanceManager manager;
+        if (!manager.loadSampleData()) {
+            errJson("Khong the doc data/finance_data_fixed.csv");
+            return 1;
+        }
+        if (!manager.saveData(DATA_FILE)) {
+            errJson("Khong the luu du lieu mau");
+            return 1;
+        }
+        cout << manager.toJson() << endl;
+        return 0;
+    }
 
     // Lenh khong nhan ra
     errJson("Lenh khong hop le: " + command);

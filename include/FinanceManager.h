@@ -56,5 +56,18 @@ public: //Hàm - hành vi
     vector<const BaseTransaction*> filterByDateRange(const string& startDate, const string& endDate) const;
     vector<const BaseTransaction*> filterByCategory(const string& category) const;
     vector<const BaseTransaction*> filterByAccount(const string& accountName) const;
-    
+
+    // 7. Xuat & nap file CSV (Storage)
+    bool saveData(const string& filename = "data/finance_data.csv");
+    bool loadData(const string& filename = "data/finance_data.csv");
+    bool exportQueryResults(const string& filename, const vector<const BaseTransaction*>& list);
+
+    // Nap du lieu demo tu file CSV rieng
+    bool loadSampleData();
+
+    // Xuat toan bo du lieu thanh chuoi JSON (dung cho Streamlit UI)
+    string toJson() const;
+
+    // Xuat ket qua canh bao ngan sach dang JSON
+    string budgetAlertJson(const string& category, int month, int year, double newAmount) const;
 };
