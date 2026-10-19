@@ -43,7 +43,12 @@ public: //Hàm - hành vi
     void displayBudgetReport(int month = 0, int year = 0) const;
     const Budget& getBudget() const;
 
-    // 6. ASCII Chart
+    // 4. ASCII Chart
     void renderMonthlySpendingChart(int year) const;
     void renderCategorySpendingChart(int month = 0, int year = 0) const;
+
+    // 5. Mo phong chi phi dinh ky (Recurring Scheduler Simulation)
+    double calculateMonthlyFixedExpenses() const;
+    void displayRecurringPlan() const;
+    int executeRecurringExpensesForMonth(int year, int month);
 };

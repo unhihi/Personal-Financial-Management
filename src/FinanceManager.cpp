@@ -229,7 +229,7 @@ void FinanceManager::displayBudgetReport(int month, int year) const {
     }
 }
 
-// ================= 6. BIEU DO TRUC QUAN ASCII CHART =================
+// ================= 4. BIEU DO TRUC QUAN ASCII CHART =================
 void FinanceManager::renderMonthlySpendingChart(int year) const {
     double monthlyExpenses[13] = {0.0}; // Mang luu chi tieu 12 thang (chi so 1 -> 12)
     double maxExpense = 0.0;
@@ -341,3 +341,114 @@ void FinanceManager::renderCategorySpendingChart(int month, int year) const {
     }
 }
 
+// ================= 5. MO PHONG CHI PHI DINH KY =================
+double FinanceManager::calculateMonthlyFixedExpenses() const {
+    double total = 0.0;
+    set<tuple<string, string, string, int>> seen;
+    for (int i = 0; i < (int)transactions.size(); i++) {
+        if (transactions[i]->getType() == "RecurringExpense") {
+            const RecurringExpense* rec = static_cast<const RecurringExpense*>(transactions[i].get());
+            if (rec->getFrequency() != "Monthly" ||
+                rec->getDescription().rfind("[Tu dong] ", 0) == 0) continue;
+            auto key = make_tuple(rec->getCategory(), rec->getAccountName(),
+                                  rec->getDescription(), rec->getDueDay());
+            if (seen.insert(key).second) total += rec->getAmount();
+        }
+    }
+    return total;
+}
+
+void FinanceManager::displayRecurringPlan() const {
+    cout << "\n============== DANH SACH CHI PHI DINH KY CO DINH =============\n";
+    cout << "+----------------+------------+--------------------+-----------+---------+----------------------+\n";
+    cout << "| Danh Muc       | Tai Khoan  | So Tien Dinh Ky    | Tan Suat  | Ngay Tra| Ghi Chu              |\n";
+    cout << "+----------------+------------+--------------------+-----------+---------+----------------------+\n";
+    vector<string> seen;
+    for (int i = 0; i < (int)transactions.size(); i++) {
+        if (transactions[i]->getType() == "RecurringExpense") {
+            string desc = transactions[i]->getDescription();
+            bool daIn = false;
+            for (int j = 0; j < (int)seen.size(); j++) {
+                if (seen[j] == desc) {
+                    daIn = true;
+                    break;
+                }
+            }
+            if (!daIn) {
+                seen.push_back(desc);
+                RecurringExpense* rec = (RecurringExpense*)transactions[i].get();
+                cout << " | " << left << setw(14) << rec->getCategory()
+                     << " | " << setw(10) << rec->getAccountName()
+                     << " | " << right << setw(18) << Utils::formatCurrency(rec->getAmount())
+                     << " | " << left << setw(9) << rec->getFrequency()
+                     << " | " << right << setw(7) << ("Ngay " + to_string(rec->getDueDay()))
+                     << " | " << left << setw(20) << rec->getDescription()
+                     << " |\n";
+            }
+        }
+    }
+    cout << "+----------------+------------+--------------------+-----------+---------+----------------------+\n";
+    cout << "Tong chi phi co dinh hang thang uoc tinh: "
+         << Utils::formatCurrency(calculateMonthlyFixedExpenses()) << "\n";
+}
+
+int FinanceManager::executeRecurringExpensesForMonth(int year, int month) {
+    if (year < 1 || month < 1 || month > 12) return 0;
+
+    const string automaticPrefix = "[Tu dong] ";
+    const int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    int lastDay = daysInMonth[month - 1];
+    if (month == 2 && (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
+        lastDay = 29;
+    }
+
+    set<tuple<string, string, string, int>> seen;
+    vector<unique_ptr<BaseTransaction>> newTransactions;
+    // Chi lay lich hang thang goc; giao dich tu dong khong tro thanh lich moi.
+    for (int i = 0; i < (int)transactions.size(); i++) {
+        if (transactions[i]->getType() == "RecurringExpense") {
+            const RecurringExpense* rec = static_cast<const RecurringExpense*>(transactions[i].get());
+            const string desc = rec->getDescription();
+            if (rec->getFrequency() != "Monthly" || desc.rfind(automaticPrefix, 0) == 0 ||
+                !Utils::isValidDate(rec->getDate()) || rec->getDueDay() < 1 || rec->getDueDay() > 31) continue;
+
+            int startYear = stoi(rec->getDate().substr(0, 4));
+            int startMonth = stoi(rec->getDate().substr(5, 2));
+            if (year * 12 + month <= startYear * 12 + startMonth) continue;
+
+            auto key = make_tuple(rec->getCategory(), rec->getAccountName(),
+                                  desc, rec->getDueDay());
+            if (!seen.insert(key).second) continue;
+
+            int dueDay = min(rec->getDueDay(), lastDay);
+            string dateStr = to_string(year) + "-" + (month < 10 ? "0" : "") + to_string(month)
+                           + "-" + (dueDay < 10 ? "0" : "") + to_string(dueDay);
+            string newDescription = automaticPrefix + desc;
+            bool alreadyApplied = false;
+            for (int j = 0; j < (int)transactions.size(); j++) {
+                const BaseTransaction* existing = transactions[j].get();
+                if (existing->getType() == "RecurringExpense" && existing->getDate() == dateStr &&
+                    existing->getDescription() == newDescription &&
+                    existing->getAccountName() == rec->getAccountName() &&
+                    existing->getCategory() == rec->getCategory()) {
+                    alreadyApplied = true;
+                    break;
+                }
+            }
+            if (alreadyApplied) continue;
+
+            newTransactions.push_back(make_unique<RecurringExpense>(
+                generateNextId(), dateStr, rec->getAmount(), rec->getCategory(),
+                rec->getAccountName(), newDescription, rec->getFrequency(), rec->getDueDay()
+            ));
+        }
+    }
+    // Ap dung cac giao dich vao tai khoan
+    int appliedCount = 0;
+    for (int i = 0; i < (int)newTransactions.size(); i++) {
+        if (addTransaction(move(newTransactions[i]))) {
+            appliedCount++;
+        }
+    }
+    return appliedCount;
+}
