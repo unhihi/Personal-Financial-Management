@@ -136,3 +136,96 @@ void FinanceManager::printTransactionTable(const vector<const BaseTransaction*>&
     cout << "Tong so giao dich: " << list.size() << "\n";
 }
 
+// ================= 3. QUAN LY NGAN SACH =================
+void FinanceManager::setBudgetLimit(const string& category, double limit) {
+    budget.setLimit(category, limit);
+}
+
+const Budget& FinanceManager::getBudget() const {
+    return budget;
+}
+
+void FinanceManager::displayBudgetReport(int month, int year) const {
+    map<string, double> limits = budget.getAllLimits();
+
+    if (limits.empty()) {
+        cout << "\n[*] Chua co han muc ngan sach nao duoc thiet lap.\n";
+        return;
+    }
+
+    int monthsCount = 1;
+    string timeTitle = "";
+
+    if (month > 0 && year > 0) {
+        monthsCount = 1;
+        timeTitle = "Thang " + to_string(month) + "/" + to_string(year);
+    } else if (year > 0 && month == 0) {
+        monthsCount = 12;
+        timeTitle = "Nam " + to_string(year) + " (12 thang)";
+    } else {
+        // Dem so thang rieng biet trong toan bo giao dich
+        vector<string> distinctMonths;
+        for (int i = 0; i < (int)transactions.size(); i++) {
+            string ym = transactions[i]->getDate().substr(0, 7);
+            bool daCo = false;
+            for (int j = 0; j < (int)distinctMonths.size(); j++) {
+                if (distinctMonths[j] == ym) {
+                    daCo = true;
+                    break;
+                }
+            }
+            if (!daCo) distinctMonths.push_back(ym);
+        }
+        monthsCount = distinctMonths.empty() ? 1 : (int)distinctMonths.size();
+        timeTitle = "Tat ca thoi gian (" + to_string(monthsCount) + " thang)";
+    }
+
+    cout << "\n============= BAO CAO NGAN SACH (" << timeTitle << ") =============\n";
+    cout << "+----------------+--------------------+--------------------+--------------------+------------------+\n";
+    cout << "| Danh Muc       | Han Muc            | Da Chi             | Con Lai            | Trang Thai       |\n";
+    cout << "+----------------+--------------------+--------------------+--------------------+------------------+\n";
+
+    for (pair<string, double> p : limits) {
+        string category = p.first;
+        double monthlyLimit = p.second;
+        double limit = monthlyLimit * monthsCount; // Nhan voi so thang bao cao
+
+        double spent = calculateCategorySpending(category, month, year);
+        double remaining = limit - spent;
+
+        double percent = 0;
+        if (limit > 0) {
+            percent = (spent / limit) * 100;
+        }
+
+        string status;
+        if (spent > limit) {
+            status = "VUOT! (" + to_string((int)percent) + "%)";
+        } else if (spent >= limit * 0.8) {
+            status = "Canh bao (" + to_string((int)percent) + "%)";
+        } else {
+            status = "An toan (" + to_string((int)percent) + "%)";
+        }
+
+        string remainingStr;
+        if (remaining >= 0) {
+            remainingStr = Utils::formatCurrency(remaining);
+        } else {
+            remainingStr = "-" + Utils::formatCurrency(-remaining);
+        }
+
+        cout << "| " << left << setw(14) << category
+             << "| " << right << setw(18) << Utils::formatCurrency(limit)
+             << "| " << setw(18) << Utils::formatCurrency(spent)
+             << "| " << setw(18) << remainingStr
+             << "| " << left << setw(16) << status
+             << "|\n";
+    }
+
+    cout << "+----------------+--------------------+--------------------+--------------------+------------------+\n";
+    if (monthsCount > 1) {
+        cout << "(*) Ghi chu: Han muc da duoc tu dong nhan voi " << monthsCount
+             << " thang theo khung thoi gian bao cao.\n";
+    }
+}
+

@@ -38,4 +38,8 @@ public: //Hàm - hành vi
     double calculateCategorySpending(const string& category, int month = 0, int year = 0) const;
     static void printTransactionTable(const vector<const BaseTransaction*>& list);
 
+    // 3. Quan ly ngan sach & canh bao (Budget Limits & Alerts)
+    void setBudgetLimit(const string& category, double limit);
+    void displayBudgetReport(int month = 0, int year = 0) const;
+    const Budget& getBudget() const;
 };
