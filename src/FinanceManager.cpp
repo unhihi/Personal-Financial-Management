@@ -452,3 +452,32 @@ int FinanceManager::executeRecurringExpensesForMonth(int year, int month) {
     }
     return appliedCount;
 }
+
+// ================= 6. LOC VA TIM KIEM GIAO DICH =================
+vector<const BaseTransaction*> FinanceManager::filterByDateRange(const string& startDate, const string& endDate) const {
+    vector<const BaseTransaction*> result;
+    for (int i = 0; i < (int)transactions.size(); i++) {
+        if (transactions[i]->getDate() >= startDate && transactions[i]->getDate() <= endDate) {
+            result.push_back(transactions[i].get());
+        }
+    }
+    return result;
+}
+vector<const BaseTransaction*> FinanceManager::filterByCategory(const string& category) const {
+    vector<const BaseTransaction*> result;
+    for (int i = 0; i < (int)transactions.size(); i++) {
+        if (transactions[i]->getCategory() == category) {
+            result.push_back(transactions[i].get());
+        }
+    }
+    return result;
+}
+vector<const BaseTransaction*> FinanceManager::filterByAccount(const string& accountName) const {
+    vector<const BaseTransaction*> result;
+    for (int i = 0; i < (int)transactions.size(); i++) {
+        if (transactions[i]->getAccountName() == accountName) {
+            result.push_back(transactions[i].get());
+        }
+    }
+    return result;
+}

@@ -153,15 +153,15 @@ void testRq6_FilteringAndSearching() {
     cout << " PASSED: Cac phuong thuc truy van loc giao dich ok.\n";
 }
 
-
 int main() {
     cout << "   RUNNING AUTOMATED TEST SUITE FOR FINANCE SYSTEM      \n";
 
     testRq1_TransactionTypes();
     testRq2_MultiAccountBalances();
     testRq3_BudgetAndAlerts();
-    testRq6_ASCIIChart();
-    testRq4_RecurringScheduler();
+    testRq4_ASCIIChart();
+    testRq5_RecurringScheduler();
+    testRq6_FilteringAndSearching();
 
     cout << "\n[PASS TEST 100%!]\n";
     return 0;

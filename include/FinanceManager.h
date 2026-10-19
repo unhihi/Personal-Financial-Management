@@ -51,4 +51,10 @@ public: //Hàm - hành vi
     double calculateMonthlyFixedExpenses() const;
     void displayRecurringPlan() const;
     int executeRecurringExpensesForMonth(int year, int month);
+
+    // 6. Loc va tim kiem giao dich (Filtering & Searching)
+    vector<const BaseTransaction*> filterByDateRange(const string& startDate, const string& endDate) const;
+    vector<const BaseTransaction*> filterByCategory(const string& category) const;
+    vector<const BaseTransaction*> filterByAccount(const string& accountName) const;
+    
 };
